@@ -115,7 +115,7 @@
     // Function to upload profile image
     async function uploadProfileImage(file) {
         try {
-            const res = await fetch('/MAR/query/UploadProfileImage', {
+            const res = await fetch('/Global/query/UploadProfileImage', {
                 method: 'POST',
                 body: (() => {
                     const data = new FormData();
@@ -1148,7 +1148,7 @@ var fields=[];
     // Function to upload profile image
     async function uploadProfileImage(file) {
         try {
-            const res = await fetch('/MAR/query/UploadProfileImage', {
+            const res = await fetch('/Global/query/UploadProfileImage', {
                 method: 'POST',
                 body: (() => {
                     const data = new FormData();
@@ -1481,7 +1481,7 @@ var fields=[];
         clientContainer.style.borderRadius = '5px';
 
         const img = document.createElement('img');
-        img.src = "https://morocco.blsportugal.com/MAR/query/getfile?fileid=" + client.PHOTOID; //client.PHOTOID;
+        img.src = "https://mauritania.blsspainglobal.com/Global/query/getfile?fileid=" + client.PHOTOID; //client.PHOTOID;
         img.style.maxWidth = '50px';
         img.style.maxHeight = '50px';
         img.style.marginRight = '10px';
@@ -1514,7 +1514,7 @@ var fields=[];
         createAccountButton.style.border = 'none';
         createAccountButton.style.borderRadius = '5px';
         createAccountButton.style.padding = '5px 10px';
-        createAccountButton.onclick = () => window.open('https://morocco.blsportugal.com/MAR/account/RegisterUser', '_blank');
+        createAccountButton.onclick = () => window.open('https://mauritania.blsspainglobal.com/Global/account/RegisterUser', '_blank');
         clientContainer.appendChild(createAccountButton);
 
         const downloadButton = document.createElement('button');
@@ -1548,7 +1548,7 @@ var fields=[];
             button.parentElement.style.display = 'flex'; // Show current client
 
             // Redirect to login page
-            window.location.href = "https://morocco.blsportugal.com/MAR/bls/vtv0001";
+            window.location.href = "https://mauritania.blsspainglobal.com/Global/bls/vtv0001";
         }
     }
 
