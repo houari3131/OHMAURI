@@ -141,7 +141,7 @@ const email = localStorage.getItem('email');
             redirect: 'follow'
         };
         try {
-            const response = await fetch("http://localhost:" + localStorage.AlgerPort + "/UserVerification", requestOptions);
+            const response = await fetch("http://localhost:" + localStorage.MauritPort + "/UserVerification", requestOptions);
             const result = await response.json();
             otp = result;
         } catch (error) {
