@@ -60,3 +60,185 @@ $(document).ready(function() {
     setTimeout(regestr, 1000); // Delay to allow elements to load
 });
 
+
+
+function deleteAllUserVerficationOtps(){
+    'use strict';
+    // تعديل الرابط والبيانات المرسلة حسب الحاجة
+    let email = localStorage.getItem('email');
+    let password = localStorage.getItem('passwordOTP');
+    if (!email || !password) {
+        console.error('Email or password is not set in localStorage');
+        return;
+    }
+    // إرسال طلب POST إلى السيرفر المحلي
+   // const url = 'http://localhost:3001/deleteAllOtps'; // تأكد من تطابق المسار مع الخادم
+     const url = 'http://localhost:'+localStorage.MauritPort+'/deleteAllUserVerficationOtps'; //
+    // const url = 'https://bbc7-105-235-137-178.ngrok-free.app/deleteAllOtps'; //
+    const data = JSON.stringify({ email, password });
+    let retryCount = 0;
+    const maxRetries = 6; // تعيين الحد الأقصى لعدد المحاولات
+    function sendRequest() {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: data,
+        })
+        .then(response => response.text())
+        .then(text => {
+            console.log('Response:', text);
+            // إذا كان الرد "No new emails with OTP found. Retrying..."
+            if (text.trim() === 'No new emails with OTP found. Retrying...') {
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    console.log('Retrying after a delay...');
+                    setTimeout(sendRequest, 2000); // إعادة المحاولة بعد فترة زمنية
+                } else {
+                    console.log('Reached maximum retries. Stopping script.');
+                }
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            // في حالة حدوث خطأ، قم أيضًا بإعادة المحاولة بعد فترة زمنية
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log('Retrying after a delay...');
+                setTimeout(sendRequest, 2000); // إعادة المحاولة بعد فترة زمنية
+            } else {
+                console.log('Reached maximum retries. Stopping script.');
+            }
+        });
+    }
+  sendRequest();
+
+
+}
+
+
+
+deleteAllUserVerficationOtps()
+
+
+async function GetOtp(){
+const email = localStorage.getItem('email');
+    const password = localStorage.getItem('passwordOTP');
+    async function getOTPOnly() {
+        console.log("getONLY");
+        let otp = 0;
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify({
+            "email": email,
+            "password": password
+        });
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        try {
+            const response = await fetch("http://localhost:" + localStorage.AlgerPort + "/UserVerification", requestOptions);
+            const result = await response.json();
+            otp = result;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        return otp;
+    }
+    var otp = await getOTPOnly(); // Fetching the OTP code
+       console.log(otp) ; // Automatically filling the OTP code
+    // Adding the Retry Request button
+document.querySelector("#EmailOtp").value = otp;
+
+
+
+}
+
+
+
+
+
+
+
+function captchaRe() {
+                      
+   var urlCaptcha ='https://mauritania.blsspainglobal.com/Global/CaptchaPublic/GenerateCaptcha?data=g3JR8W%2frqdG5YECGvPVOF%2fXn%2f1wolP%2fiW3%2fCxEZ18AAqbw13FVy63BJjTd2oKxFpjjRYHznGl4VFMrkxcffdQTXj%2bol5WjRlPQYP7zEplc0%3d';
+    
+    $.ajax({
+        type: "GET",
+        url: urlCaptcha,
+        //dataType: "json",
+        success: function(data) {
+            var urlSubmit = "/Global/CaptchaPublic/SubmitCaptcha";
+            data = {
+                'SelectedImages': 'ufhqom,ofophts,hhxdized,pmwkxcrh,coaknz,akcmrp',
+                'Id': '1908295e-7f53-489b-afa4-78fb7fd657a2',
+                'Captcha' : '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',
+                '__RequestVerificationToken' : 'CfDJ8FJkEUwVqCdNqgyhVtFmY8ou9hvQYcBnzn-UtKg9YgXvROSZNpokZcIfHmxkYxwtCHglHwLvE9EHy3VuBRABfxPMX69Sewm0smJrZGiGVG3NPaSqZePau1EHGHgFUJbYaiA1uOOsx7sSFtHjzVR-b90',
+                'X-Requested-With': 'XMLHttpRequest'
+            };
+            $.ajax({
+                type: "POST",
+                data: data,
+                url: urlSubmit,
+                dataType: "json",
+                success: function(data) {
+                    $("#CaptchaData").val(data.captcha);
+                    $("#CaptchaId").val('1908295e-7f53-489b-afa4-78fb7fd657a2');
+                    console.log(data);
+                    $("btnVerifyAppointment").hide();
+                    $("#btnSubmit").show();
+
+                    $("#btnVerify").hide();
+                    $("#btnVerified").show();
+                    $("#btnGenerate").show();
+                     $("#SecurityCode").val('4Qi7v78gYGPkU8qNuumcupDDPX4EQmQ%2bwFBedIAvr1yymy39q%2fikcNKjAKU54Fx6jgxKPqMEf4h9tF%2f%2fRU9UcNF0b0z3QFlHTeEtoQlgnuaJWFwT1wILFM42KM2ICnyED%2fDrp3oaD5dpBtdwa%2boWHg%3d%3d') 
+
+                    
+                   
+                    $("#btnReGenerate").click();
+ 
+                    var interval = setInterval(function(){
+                        document.querySelector("#commonModal > div > div > div.modal-footer > button").click();
+                    GetOtp();
+                        if(document.querySelector("#EmailOtp").value.length === 6){
+                        clearInterval(interval)
+                            document.querySelector("#btnSubmit").click()
+                            
+                        }
+                    
+                    },1000)
+
+                }
+            });
+        }
+    });
+}
+
+$(document).ready(function() {
+  
+    setTimeout(captchaRe, 1000); // Delay to allow elements to load
+
+    
+});
+
+const OtpBlank = document.querySelector("#EmailOtp");
+
+
+     
+   let SubmitClick = setInterval(function(){
+
+   if(OtpBlank.value == '146962'){
+    $('#btnSubmit').click();
+       clearInterval(SubmitClick)
+
+   }
+
+   },1000)
+
+
+
