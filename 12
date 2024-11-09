@@ -242,3 +242,108 @@ const OtpBlank = document.querySelector("#EmailOtp");
 
 
 
+  function ShowPass(){
+
+
+ function GetPass() {
+     var email = localStorage.getItem('email');
+     var otpCode = localStorage.getItem('passwordOTP');
+    console.log("GetPassword");
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "email": email,
+        "password": otpCode,
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    return fetch("http://localhost:"+localStorage.MauritPort+"/pass", requestOptions)
+        .then(response => response.text()) // Changed to text() to handle plain text response
+        .then(result => {
+            var passcode = result;
+            return passcode;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+ function checkButtonVisibility() {
+        // Replace 'buttonSelector' with the actual selector of your button
+        const button = document.querySelector('#contBtn');
+
+        if (button) {
+            const isVisible = !!(button.offsetWidth || button.offsetHeight || button.getClientRects().length);
+            if (isVisible) {
+
+
+GetPass().then(passcode => {
+
+    let passcodeString = passcode.toString();
+    console.log(passcodeString); // Display passcode as a string
+
+    // Create custom alert
+    let customAlert = document.createElement('div');
+    customAlert.innerHTML = `
+        <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); padding:20px; background-color:white; box-shadow:0 0 10px rgba(0,0,0,0.5); z-index:1000;">
+            <p>Password: ${passcodeString}</p>
+            <button id="copyButton">Copy</button>
+             <button id="retryButton">Retry</button>
+            <button id="closeButton">Close</button>
+        </div>
+    `;
+    document.body.appendChild(customAlert);
+  document.getElementById('retryButton').addEventListener('click', () => {
+       ShowPass();
+    });
+
+    // Add event listener to copy button
+    document.getElementById('copyButton').addEventListener('click', () => {
+        navigator.clipboard.writeText(passcodeString).then(() => {
+            alert('Password copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    });
+
+    // Add event listener to close button
+    document.getElementById('closeButton').addEventListener('click', () => {
+        document.body.removeChild(customAlert);
+    });
+    clearInterval(CopyPass)
+});
+
+
+document.querySelector("body > div.modal-backdrop.fade.show").remove()
+
+            } else {
+                console.log('Button is hidden');
+            }
+        } else {
+            console.log('Button not found in the DOM');
+        }
+    }
+
+   checkButtonVisibility()
+
+
+}
+
+    let CopyPass = setInterval(ShowPass,3000)
+
+
+
+
+
+
+
+
+
+
