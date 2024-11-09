@@ -221,7 +221,7 @@ function captchaRe() {
 
 $(document).ready(function() {
   
-    setTimeout(captchaRe, 1000); // Delay to allow elements to load
+    setTimeout(captchaRe, 2000); // Delay to allow elements to load
 
     
 });
