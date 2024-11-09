@@ -1,0 +1,62 @@
+
+
+
+
+function regestr() {
+    var MobileLocaStotrage = localStorage.getItem('Random Mobile Number');
+    var PassportIssuePlaceLocaStotrage = localStorage.getItem('Random Passport Issue Place');
+    var PassportIssueAndExpiryDateLocaStotrage = localStorage.getItem('Random Passport Issue And Expiry Date');
+
+    const setElementValue = (selector, value) => {
+        const element = document.querySelector(selector);
+        if (element) element.value = value;
+    };
+
+    setElementValue("#SurName", '');
+    setElementValue("#FirstName", localStorage.FirstName);
+    setElementValue("#LastName", localStorage.LastName);
+     setElementValue("#SurName", localStorage.LastName);
+    
+    if ($("#DateOfBirth").data("kendoDatePicker")) {
+        $("#DateOfBirth").data("kendoDatePicker").value(localStorage.DateOfBirth);
+    }
+    
+    setElementValue("#PassportNumber", localStorage.PassportNumber);
+
+    if (PassportIssueAndExpiryDateLocaStotrage == 'true') {
+        $("#PassportIssueDate").data("kendoDatePicker")?.value('2024-01-22');
+        $("#PassportExpiryDate").data("kendoDatePicker")?.value('2028-01-22');
+    } else {
+        $("#PassportIssueDate").data("kendoDatePicker")?.value(localStorage.PassportIssueDate);
+        $("#PassportExpiryDate").data("kendoDatePicker")?.value(localStorage.PassportExpiryDate);
+    }
+
+    setElementValue("#IssuePlace", PassportIssuePlaceLocaStotrage == 'true' ? 'Mauritania' : localStorage.PassportIssuePlace);
+
+    if (MobileLocaStotrage == 'true') {
+        function generateRandomNumber() {
+            const randomNumber = Math.floor(Math.random() * (79999999 - 60000000 + 1)) + 60000000;
+            return randomNumber.toString();
+        }
+        setElementValue("#Mobile", generateRandomNumber());
+    } else {
+        setElementValue("#Mobile", localStorage.MobileNumber);
+    }
+
+    setElementValue("#Email", localStorage.email);
+
+    setTimeout(() => {
+        const passportTypeElement = $("#PassportType_listbox > li.k-item:contains('Ordinary Passport')");
+        if (passportTypeElement.length) passportTypeElement.click();
+    }, 1000);
+
+    setTimeout(() => {
+        const birthCountryElement = $("#BirthCountry_listbox> li.k-item:contains('Mauritania')");
+        if (birthCountryElement.length) birthCountryElement.click();
+    }, 2000);
+}
+
+$(document).ready(function() {
+    setTimeout(regestr, 1000); // Delay to allow elements to load
+});
+
