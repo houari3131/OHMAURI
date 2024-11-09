@@ -1,0 +1,146 @@
+
+(function() {
+    // $("btnVerify").click();
+    // document.querySelector("#btnVerify").click();
+    localStorage.setItem('email', localStorage.getItem('email'));
+    localStorage.setItem('password', localStorage.getItem('password'));
+    localStorage.setItem('passwordOTP', localStorage.getItem('passwordOTP'));
+    localStorage.setItem('category', localStorage.getItem('category'));
+    localStorage.setItem('familyOfMembers', localStorage.getItem('familyOfMembers'));
+    localStorage.setItem('location', localStorage.getItem('location'));
+    localStorage.setItem('visatype', localStorage.getItem('visatype'));
+    localStorage.setItem('visaSubtype', localStorage.getItem('visaSubtype'));
+    localStorage.setItem('linkimg', localStorage.getItem('linkimg'));
+    localStorage.setItem('SELFI01', localStorage.getItem('SELFI01'));
+    localStorage.setItem('SELFI02', localStorage.getItem('SELFI02'));
+    localStorage.setItem('autoForm', 'true');
+
+    var Client = {
+        email: localStorage.getItem('email'),
+        password: localStorage.getItem('password')
+    };
+
+    var elmpass;
+
+    var pageLocation = window.location.href.toUpperCase();
+    $(document).ready(function() {
+        if (pageLocation.indexOf("/Global/account/Login?timeOut=True".toUpperCase()) > -1) {
+            window.location.href = "/Global/account/loginPost";
+        }
+    });
+
+    localStorage.setItem("TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+    var scripLogin = document.createElement("script");
+    scripLogin.innerHTML =
+    `
+    function VerifyCaptcha(e, obj) {
+        var win = GetMainWindow();
+        localStorage.setItem("dataCaptcha", '');
+        var title = 'Verify Selection';
+        win.iframeOpenUrl = '/MAR/NewCaptcha/GenerateCaptcha';
+        win.OpenWindow({ Title:title, Width: 400, Height: 600 });
+        return false;
+    }
+    function OnVerifyCaptcha(res) {
+        if (res.exceeded) {
+            window.location.href = window.location.href.split("?")[0];
+            return false;
+        }
+        else if (res.success) {
+            console.log(res.cd);
+            localStorage.setItem("dataCaptcha", encodeURIComponent(res.cd));
+            window.location.href = "/MAR/bls/vt?data="+localStorage.getItem("dataCaptcha");
+        }
+    }
+    var onAjaxSuccess = function (res) {
+        if (res.success) {
+                            window.location.href = "https://mauritania.blsspainglobal.com/Global/bls/visatypeverification";
+            return false;
+        }
+        else if(res.error ==="This account is locked due to unauthorized access. Please try again after some time") {
+            const msg = document.createElement("center");
+            msg.style="background:#7722dd;color:#fff;";
+            msg.innerHTML="This account is locked due to unauthorized access. Please try again after some time";
+            document.querySelector("body").prepend(msg);
+        }
+    };
+    var onAjaxFailed = function (context, res) {
+        if (context.status === 400 || context.status === 403) {
+            document.querySelector("form").action = '/DZA/account/logInPost';
+        }
+    };
+    `;
+    document.querySelector("body").append(scripLogin);
+
+    function byPassCaptcha() {
+        var urlCaptcha="/Global/CaptchaPublic/GenerateCaptcha?data=cdHK32ynlk5WvXjZ2c%2bKdBDRAzzrJSiYTUiHjU1o1GD4Kd0OziNgiuCsiSECPWR27nVXN1PYjtUQHvA9tF1o3MwHyH%2bxTh0Ra%2fA9ejMCDzU%3d";
+        $.ajax({
+            type: "GET",
+            url: urlCaptcha,
+            success: function (data) {
+                var urlSubmit ="/Global/CaptchaPublic/SubmitCaptcha";
+                data ={
+                    'SelectedImages':'hljmihroe,oewbbno,tlikcjvt,zwjip,ngngcax',
+                    'Id':'82c562fa-0b86-4a9c-a7f8-b23a3b086ce5',
+                    'Captcha': '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',
+                    '__RequestVerificationToken':$('input:hidden[name="__RequestVerificationToken"]').val(),
+                    'X-Requested-With':'XMLHttpRequest'
+                };
+                $.ajax({
+                    type: "POST",
+                    data:data,
+                    url: urlSubmit,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#CaptchaData").val(data.captcha);
+                        $("#CaptchaId").val('82c562fa-0b86-4a9c-a7f8-b23a3b086ce5');
+                        $("#btnSubmit").show();
+                            if(localStorage.autoLogin == 'true'){
+                $("#btnSubmit").click();
+                        
+
+                }
+                        //loginReqest('82c562fa-0b86-4a9c-a7f8-b23a3b086ce5',data.captcha)
+                    }
+                });
+            }
+        });
+    }
+    byPassCaptcha("login");
+
+    const inputs = document.querySelectorAll('input[type="text"]');
+    let requiredInput = null;
+    for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].hasAttribute('required')) {
+            requiredInput = inputs[i];
+            break;
+        }
+    }
+
+    const inputtts = document.querySelectorAll('input[type="password"]');
+    let requiredInputtt = null;
+    for (let i = 0; i < inputtts.length; i++) {
+        if (inputtts[i].hasAttribute('required')) {
+            requiredInputtt = inputtts[i];
+            break;
+        }
+    }
+    elmpass=requiredInputtt;
+    requiredInput.value=Client.email;
+    requiredInputtt.value=Client.password;
+
+    setTimeout(function() {
+        var _0x541f06 = setInterval(_0x3c1ddc, 100);
+
+        function _0x3c1ddc() {
+            if ($("#btnSubmit").is(":visible")) {
+                if(localStorage.autoLogin == 'true'){
+                $("#btnSubmit").click();
+                           clearInterval(_0x541f06);
+
+                }
+                    
+            }
+        }
+    }, 1500); // Wait for 1.5 seconds before attempting to submit the form
+})();
